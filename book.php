@@ -83,146 +83,7 @@ $reviewResult = $reviewStmt->get_result();
 
 ?>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>
-        <?php echo htmlspecialchars($book["title"]); ?>
-    </title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-        }
-
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 900px;
-            margin: 30px auto;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .title {
-            color: #2c3e50;
-            margin-top: 0;
-        }
-
-        .details p {
-            margin: 12px 0;
-        }
-
-        .rating {
-            color: #f39c12;
-            font-weight: bold;
-        }
-
-        .genres {
-            margin: 10px 0 20px;
-        }
-
-        .genre {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 15px;
-            margin: 4px;
-        }
-
-        .description {
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .review-button {
-            display: inline-block;
-            padding: 11px 18px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .review-button:hover {
-            background-color: #2980b9;
-        }
-
-        .reviews {
-            margin-top: 20px;
-        }
-
-        .review {
-            border-top: 1px solid #ddd;
-            padding: 18px 0;
-        }
-
-        .review strong {
-            color: #2c3e50;
-            font-size: 16px;
-        }
-
-        .review-rating {
-            color: #f39c12;
-            font-weight: bold;
-        }
-
-        .date {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 11px 18px;
-            background-color: #34495e;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .back:hover {
-            background-color: #2c3e50;
-        }
-
-        .no-reviews {
-            color: #777;
-            padding: 15px 0;
-        }
-
-    </style>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="header">
-<div class="site-nav"><a class="brand" href="index.php">📚 Book Discovery</a><div class="site-links"><a href="index.php">Home</a><a href="recommendations.php">Recommendations</a><a href="preferences.php">Preferences</a><a href="logout.php">Logout</a></div></div>
-
-    <h1>📚 Book Discovery System</h1>
-
-</div>
-
+<?php $pageTitle = $book["title"]; include "header.php"; ?>
 
 <div class="container">
 
@@ -264,7 +125,7 @@ $reviewResult = $reviewStmt->get_result();
                 <strong>Rating:</strong>
 
                 <span class="rating">
-                    ⭐ <?php echo htmlspecialchars($book["rating"]); ?>
+                     <?php echo htmlspecialchars($book["rating"]); ?>
                 </span>
 
             </p>
@@ -324,7 +185,7 @@ $reviewResult = $reviewStmt->get_result();
             href="review.php?id=<?php echo $book_id; ?>"
             class="review-button"
         >
-            ✍️ Write a Review
+            Write a Review
         </a>
 
 
@@ -347,7 +208,7 @@ $reviewResult = $reviewStmt->get_result();
 
                         <p class="review-rating">
 
-                            ⭐
+                            
                             <?php echo htmlspecialchars($review["rating"]); ?>
                             / 5
 
@@ -396,6 +257,4 @@ $reviewResult = $reviewStmt->get_result();
 
 </div>
 
-</body>
-
-</html>
+<?php include "footer.php"; ?>

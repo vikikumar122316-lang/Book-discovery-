@@ -40,7 +40,9 @@ $book = $result->fetch_assoc();
 
 /* Submit review */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !csrf_valid()) {
+    $message = "Your session expired. Please try again.";
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $rating = floatval($_POST["rating"]);
     $comment = trim($_POST["comment"]);
@@ -148,113 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>Write a Review</title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-        }
-
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 550px;
-            margin: 40px auto;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: #2c3e50;
-        }
-
-        label {
-            display: block;
-            margin-top: 18px;
-            font-weight: bold;
-        }
-
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 15px;
-        }
-
-        textarea {
-            height: 130px;
-            resize: vertical;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 25px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .message {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #fdecea;
-            color: #c0392b;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            color: #2c3e50;
-            text-decoration: none;
-        }
-
-    </style>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="header">
-<div class="site-nav"><a class="brand" href="index.php">📚 Book Discovery</a><div class="site-links"><a href="index.php">Home</a><a href="recommendations.php">Recommendations</a><a href="preferences.php">Preferences</a><a href="logout.php">Logout</a></div></div>
-
-    <h1>📚 Book Discovery System</h1>
-
-</div>
-
+<?php $pageTitle = 'Write a Review'; include "header.php"; ?>
 
 <div class="container">
 
@@ -282,6 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
         <form method="POST">
+        <?php echo csrf_field(); ?>
 
             <label>Rating</label>
 
@@ -329,6 +226,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </div>
 
-</body>
-
-</html>
+<?php include "footer.php"; ?>

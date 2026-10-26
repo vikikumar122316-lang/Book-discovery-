@@ -4,17 +4,20 @@ include "db.php";
 
 $message = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !csrf_valid()) {
+    $message = "Your session expired. Please try again.";
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $email = trim($_POST["email"]);
+    $password = $_POST["password"] ?? "";
 
-    if ($email == "") {
+    if ($email == "" || $password == "") {
 
-        $message = "Please enter your email.";
+        $message = "Please enter your email and password.";
 
     } else {
 
-        $sql = "SELECT reader_id, name, email, language
+        $sql = "SELECT reader_id, name, email, language, password_hash
                 FROM readers
                 WHERE email = ?";
 
@@ -24,9 +27,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $result = $stmt->get_result();
 
+        $reader = null;
         if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            if (!empty($row["password_hash"]) && password_verify($password, $row["password_hash"])) { $reader = $row; }
+        }
 
-            $reader = $result->fetch_assoc();
+        if ($reader !== null) {
+
+            session_regenerate_id(true);
 
             $_SESSION["reader_id"] = $reader["reader_id"];
             $_SESSION["reader_name"] = $reader["name"];
@@ -38,81 +47,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         } else {
 
-            $message = "Reader not found. Please register first.";
+            $message = "Invalid email or password.";
 
         }
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>Reader Login</title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-        }
-
-        .container {
-            width: 400px;
-            margin: 100px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
-
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .message {
-            text-align: center;
-            color: #e74c3c;
-            margin-bottom: 15px;
-        }
-
-    </style>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-<div class="site-nav"><a class="brand" href="index.php">📚 Book Discovery</a><div class="site-links"><a href="index.php">Home</a><a href="recommendations.php">Recommendations</a><a href="preferences.php">Preferences</a><a href="logout.php">Logout</a></div></div>
+<?php $pageTitle = 'Reader Login'; include "header.php"; ?>
 
 <div class="container">
 
-    <h2>📚 Reader Login</h2>
+    <h2>Reader Login</h2>
 
     <?php if ($message != "") { ?>
 
@@ -123,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php } ?>
 
     <form method="POST">
+        <?php echo csrf_field(); ?>
 
         <input
             type="email"
@@ -130,6 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             placeholder="Enter your registered email"
             required
         >
+
+        <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
 
         <button type="submit">
             Login
@@ -139,6 +88,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </div>
 
-</body>
-
-</html>
+<?php include "footer.php"; ?>

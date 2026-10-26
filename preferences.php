@@ -21,7 +21,9 @@ $genreResult = $conn->query($genreQuery);
 
 /* Save / Update preferences */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !csrf_valid()) {
+    $message = "Your session expired. Please try again.";
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $genre_id = intval($_POST["genre_id"]);
     $preferred_language = trim($_POST["preferred_language"]);
@@ -100,82 +102,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-
-    <title>Book Preferences</title>
-
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-        }
-
-        .container {
-            width: 450px;
-            margin: 60px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
-
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        select,
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 25px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .message {
-            text-align: center;
-            color: #e74c3c;
-        }
-
-    </style>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-<div class="site-nav"><a class="brand" href="index.php">📚 Book Discovery</a><div class="site-links"><a href="index.php">Home</a><a href="recommendations.php">Recommendations</a><a href="preferences.php">Preferences</a><a href="logout.php">Logout</a></div></div>
+<?php $pageTitle = 'Book Preferences'; include "header.php"; ?>
 
 <div class="container">
 
-    <h2>📚 Your Book Preferences</h2>
+    <h2>Your Book Preferences</h2>
 
     <p>
         Welcome,
@@ -194,6 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <form method="POST">
+        <?php echo csrf_field(); ?>
 
         <label>Preferred Genre</label>
 
@@ -272,5 +204,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </div>
 
-</body>
-</html>
+<?php include "footer.php"; ?>

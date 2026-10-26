@@ -73,209 +73,19 @@ $sql = "
 
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
-    die("Recommendation query error: " . htmlspecialchars($conn->error));
+    app_error("Recommendation query error: " . $conn->error);
 }
 
 $stmt->bind_param("ii", $reader_id, $reader_id);
 if (!$stmt->execute()) {
-    die("Failed to get recommendations: " . htmlspecialchars($stmt->error));
+    app_error("Failed to get recommendations: " . $stmt->error);
 }
 
 $result = $stmt->get_result();
 
 ?>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>Book Recommendations</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-        }
-
-        /* Header */
-
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-        }
-
-        .header p {
-            margin: 8px 0 15px;
-        }
-
-        .logout {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: white;
-            color: #2c3e50;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-        }
-
-        .logout:hover {
-            background-color: #ecf0f1;
-        }
-
-        /* Main container */
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 30px auto;
-        }
-
-        /* Welcome */
-
-        .welcome {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .welcome h2 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-
-        /* Book cards */
-
-        .books {
-            display: grid;
-            grid-template-columns: repeat(
-                auto-fit,
-                minmax(280px, 1fr)
-            );
-
-            gap: 20px;
-        }
-
-        .book {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .book h3 {
-            color: #2c3e50;
-            margin-top: 0;
-            min-height: 45px;
-        }
-
-        .book p {
-            margin: 10px 0;
-        }
-
-        .rating {
-            color: #f39c12;
-            font-weight: bold;
-        }
-
-        /* Match score */
-
-        .score {
-            background-color: #3498db;
-            color: white;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        /* Details button */
-
-        .details-btn {
-            display: block;
-            margin-top: 15px;
-            padding: 11px;
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .details-btn:hover {
-            background-color: #1f2d3a;
-        }
-
-        /* Bottom buttons */
-
-        .buttons {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .change-btn {
-            display: inline-block;
-            padding: 11px 18px;
-            background-color: #7f8c8d;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .change-btn:hover {
-            background-color: #636e72;
-        }
-
-        /* No books */
-
-        .no-books {
-            background-color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-    </style>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-
-<!-- Header -->
-
-<div class="header">
-<div class="site-nav"><a class="brand" href="index.php">📚 Book Discovery</a><div class="site-links"><a href="index.php">Home</a><a href="recommendations.php">Recommendations</a><a href="preferences.php">Preferences</a><a href="logout.php">Logout</a></div></div>
-
-    <h1>📚 Book Discovery System</h1>
-
-    <p>Personalized Book Recommendations</p>
-
-    <a href="logout.php" class="logout">
-        Logout
-    </a>
-
-</div>
-
-
-<!-- Main -->
+<?php $pageTitle = 'Book Recommendations'; include "header.php"; ?>
 
 <div class="container">
 
@@ -347,7 +157,7 @@ $result = $stmt->get_result();
 
                         <span class="rating">
 
-                            ⭐
+                            
                             <?php
                             echo htmlspecialchars(
                                 $book["Rating"]
@@ -434,6 +244,4 @@ $result = $stmt->get_result();
 
 </div>
 
-</body>
-
-</html>
+<?php include "footer.php"; ?>
